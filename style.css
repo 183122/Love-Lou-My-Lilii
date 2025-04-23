@@ -1,0 +1,77 @@
+body {
+  font-family: 'Kanit', sans-serif;
+  line-height: 0.1;
+  background: linear-gradient(to bottom, #ffd3dc, #d2b48c);
+  color: #5a3e36;
+  text-align: center;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  margin-top: 10%;
+  padding: 20px;
+}
+
+input, button {
+  display: block;
+  margin: 10px auto;
+  padding: 10px;
+  border-radius: 5px;
+  border: none;
+  font-size: 16px;
+}
+
+button {
+  background-color: #f7b1b1;
+  color: #5a3e36;
+  font-family: 'Kanit', sans-serif;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+button:hover {
+  background-color: #e09d9d;
+}
+
+.heart-img {
+  width: 100px;
+  height: 100px;
+  margin-bottom: 20px;
+}
+.slider {
+  width: 50%;
+  overflow: hidden;
+  margin: 30px auto;
+  display: flex;
+  justify-content: center;
+}
+
+.slides {
+  display: flex;
+  width: calc(200px * 10); /* 10 รูป */
+  animation: slide 30s infinite;
+}
+
+.slides img {
+  width: 600px;
+  height: 600px;
+  flex-shrink: 0;
+  margin: 0 5px;
+  border-radius: 10px;
+  object-fit: cover;
+}
+
+@keyframes slide {
+  0% { transform: translateX(0); }
+  10% { transform: translateX(0); }
+  20% { transform: translateX(-600px); }
+  30% { transform: translateX(-1200px); }
+  40% { transform: translateX(-1800px); }
+  50% { transform: translateX(-2400px); }
+  60% { transform: translateX(-3000px); }
+  70% { transform: translateX(-3600px); }
+  80% { transform: translateX(-4200px); }
+  90% { transform: translateX(-4800px); }
+  100% { transform: translateX(-5400px); }
+}
