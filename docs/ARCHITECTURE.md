@@ -2,7 +2,7 @@
 
 ## ภาพรวม
 ```
-Browser ──HTTPS──▶ Next.js Route Handlers (Vercel) ──▶ Supabase Postgres (service role, RLS deny-all)
+Browser ──HTTPS──▶ Next.js Route Handlers (Cloudflare Workers / OpenNext) ──▶ Supabase Postgres (service role, RLS deny-all)
                                    │
                                    └──▶ Google Drive API v3 (OAuth refresh token, server-only)
 ```
@@ -14,7 +14,7 @@ Browser ไม่ติดต่อ Supabase หรือ Google โดยตร
 3. Chunk สุดท้าย: Drive คืน File ID → บันทึก `drive_file_id`, `md5`, สถานะ `UPLOADED`
 4. `GET /api/uploads/:id` — ถาม Drive ว่ารับไปแล้วกี่ byte เพื่อ **อัปโหลดต่อ** หลังเน็ตหลุด
 
-ทำไมไม่ให้ Browser ส่งตรงไป Drive: resumable session URL ทำหน้าที่เป็น credential ใครได้ URL ก็เขียนไฟล์ได้ และระบบจะตรวจเนื้อหาไฟล์ไม่ได้ จึงให้เซิร์ฟเวอร์ถือ URL ไว้และตรวจทุก chunk แทน — แลกกับปริมาณ bandwidth ที่ผ่าน Vercel (ไม่เกิน 4.5 MB ต่อคำขอ จึงไม่ติดข้อจำกัด และไม่ buffer ทั้งไฟล์)
+ทำไมไม่ให้ Browser ส่งตรงไป Drive: resumable session URL ทำหน้าที่เป็น credential ใครได้ URL ก็เขียนไฟล์ได้ และระบบจะตรวจเนื้อหาไฟล์ไม่ได้ จึงให้เซิร์ฟเวอร์ถือ URL ไว้และตรวจทุก chunk แทน — แลกกับ bandwidth ที่ผ่าน Worker (ครั้งละ ≤ 3.75 MiB ใช้หน่วยความจำน้อย ไม่ buffer ทั้งไฟล์)
 
 **กันข้อมูลซ้ำ / Retry:** `client_upload_id` (unique) สร้างที่ Browser ส่งซ้ำได้คืนรายการเดิม; chunk ที่ offset ไม่ตรงได้ 409 + offset ที่ถูกต้อง; ไฟล์ที่ UPLOADED แล้วส่งซ้ำไม่สร้างไฟล์ใหม่; session หมดอายุ (404/410) เริ่มใหม่อัตโนมัติ; ไฟล์ล้มเหลว = `FAILED` ไม่ถูกนับ
 **Auto-retry ฝั่ง Browser:** เฉพาะเน็ตหลุด/5xx ชั่วคราว (backoff 1→16 วิ, 5 ครั้ง) — ปัญหาสิทธิ์/โทเคนแสดงทันทีพร้อมปุ่ม “ลองใหม่”
@@ -24,7 +24,7 @@ Browser ไม่ติดต่อ Supabase หรือ Google โดยตร
 ถ้า Drive ตอบ 404 → ไฟล์ถูกทำเครื่องหมาย `MISSING` และสถานะตัวชี้วัดคำนวณใหม่ทันที (และมีปุ่ม “ตรวจสอบไฟล์กับ Google Drive” ตรวจทั้งหมด)
 
 ## ZIP
-ไม่สร้าง ZIP บน Serverless: วิดีโอรวมหลาย GB เกินหน่วยความจำ/เวลา/ขนาด response ของ Vercel แทนที่ด้วย (1) ดาวน์โหลดทีละไฟล์จากหน้า VTR (2) Manifest CSV/JSON (3) ดาวน์โหลดโฟลเดอร์ผ่าน Google Drive ซึ่ง Drive บีบอัดให้เอง หากต้องการ ZIP อัตโนมัติในอนาคต ให้ใช้ Background worker (เช่น Cloud Run job) ที่อ่านจาก Drive แล้วเขียน ZIP กลับไปที่ Drive
+ไม่สร้าง ZIP บน Worker: วิดีโอรวมหลาย GB เกินหน่วยความจำ 128 MB และเวลา CPU ของ Cloudflare Workers แทนที่ด้วย (1) ดาวน์โหลดทีละไฟล์จากหน้า VTR (2) Manifest CSV/JSON (3) ดาวน์โหลดโฟลเดอร์ผ่าน Google Drive ซึ่ง Drive บีบอัดให้เอง หากต้องการ ZIP อัตโนมัติในอนาคต ให้ใช้ Background worker (เช่น Cloud Run job) ที่อ่านจาก Drive แล้วเขียน ZIP กลับไปที่ Drive
 
 ## สิทธิ์
 | บทบาท | ทำได้ |
@@ -36,8 +36,9 @@ Browser ไม่ติดต่อ Supabase หรือ Google โดยตร
 ## มาตรการความปลอดภัย
 - รหัสผ่าน scrypt hash; session token สุ่ม 256-bit เก็บเฉพาะ SHA-256; Cookie `HttpOnly; Secure; SameSite=Lax` (`__Host-` prefix บน HTTPS); อายุ 8 ชม. (ผู้ดูแล) / 7 วัน (ผู้ชม)
 - CSRF: header `x-csrf-token` ผูกกับ session + ตรวจ Origin ทุกคำขอที่เปลี่ยนข้อมูล; OAuth `state` ลงนามและผูกกับ session
+- IP ผู้ใช้อ่านจาก `cf-connecting-ip` ของ Cloudflare (ปลอมไม่ได้)
 - Rate limiting ใน Postgres (ใช้ร่วมกันทุก instance): login 5/15 นาที, viewer 10/15 นาที, submission 15/ชม., chunk 3000/ชม., file read 1500/ชม. ต่อ IP
 - Cloudflare Turnstile บนฟอร์มสาธารณะ (ระบบปฏิเสธการส่งถ้าบังคับ CAPTCHA แต่ไม่ได้ตั้งคีย์)
 - zod validation ทุก input, จำกัดขนาด JSON, sanitize ชื่อไฟล์, CSV formula injection protection
 - Security headers: HSTS, X-Frame-Options DENY, nosniff, Referrer-Policy, Permissions-Policy
-- ข้อผิดพลาดถูก log ฝั่งเซิร์ฟเวอร์ (`console.error` → Vercel Logs) และส่งข้อความที่ปลอดภัยให้ผู้ใช้
+- ข้อผิดพลาดถูก log ฝั่งเซิร์ฟเวอร์ (`console.error` → Cloudflare Workers Logs / `wrangler tail`) และส่งข้อความที่ปลอดภัยให้ผู้ใช้

@@ -19,7 +19,9 @@ export const DEFAULT_LIMITS = {
 
 /**
  * Chunk size for proxying uploads to Google Drive. Must be a multiple of
- * 256 KiB (Drive requirement) and stay below Vercel's 4.5 MB request body limit.
+ * 256 KiB (Drive requirement). Kept small so each request uses little Worker
+ * memory/CPU and stays far below Cloudflare's 100 MB request body limit (and
+ * Vercel's 4.5 MB, so the app remains portable).
  */
 export const CHUNK_SIZE = 15 * 256 * 1024; // 3,932,160 bytes (3.75 MiB)
 

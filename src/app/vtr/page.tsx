@@ -170,7 +170,7 @@ function Workspace() {
           </div>
           <p className="mt-2 flex gap-1.5 text-xs text-muted">
             <Info className="mt-0.5 size-3.5 shrink-0" />
-            ระบบไม่สร้างไฟล์ ZIP บนเซิร์ฟเวอร์ เนื่องจากวิดีโอรวมอาจเกินขีดจำกัดหน่วยความจำ/เวลาของ Serverless Function — ดาวน์โหลดทีละไฟล์แทน หรือเปิดโฟลเดอร์ใน Google Drive แล้วใช้ “ดาวน์โหลด” ของ Drive
+            ระบบไม่สร้างไฟล์ ZIP บนเซิร์ฟเวอร์ เนื่องจากวิดีโอรวมอาจเกินขีดจำกัดหน่วยความจำ (128 MB) และเวลาประมวลผลของ Cloudflare Workers — ดาวน์โหลดทีละไฟล์แทน หรือเปิดโฟลเดอร์ใน Google Drive แล้วใช้ “ดาวน์โหลด” ของ Drive
           </p>
         </CardHeader>
         <CardContent>

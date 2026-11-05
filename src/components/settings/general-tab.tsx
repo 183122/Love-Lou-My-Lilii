@@ -116,7 +116,7 @@ export function UploadTab({ settings, save, saving }: Props) {
           </div>
         </fieldset>
         <p className="text-xs text-muted sm:col-span-3">
-          ไฟล์ใหญ่จะถูกแบ่งส่งเป็นชิ้นละ {formatBytes(3932160)} ผ่านเซิร์ฟเวอร์ไปยัง Google Drive (Resumable Upload) จึงไม่ติดขีดจำกัด 4.5 MB ต่อคำขอของ Vercel
+          ไฟล์ใหญ่จะถูกแบ่งส่งเป็นชิ้นละ {formatBytes(3932160)} ผ่านเซิร์ฟเวอร์ไปยัง Google Drive (Resumable Upload) จึงไม่ต้องส่งไฟล์ใหญ่ทั้งไฟล์ในคำขอเดียว และอัปโหลดต่อได้เมื่อเน็ตหลุด
         </p>
         <div className="sm:col-span-3">
           <Button disabled={saving} onClick={() => save({ maxImageMb: v.maxImageMb, maxVideoMb: v.maxVideoMb, maxFiles: v.maxFiles, allowedTypes: v.allowedTypes })}>

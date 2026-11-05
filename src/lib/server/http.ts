@@ -64,6 +64,9 @@ export function route<A extends unknown[]>(fn: (...args: A) => Promise<Response>
 }
 
 export function clientIp(req: Request): string {
+  // Cloudflare sets cf-connecting-ip (cannot be spoofed by the client behind Cloudflare).
+  const cf = req.headers.get("cf-connecting-ip");
+  if (cf) return cf.trim();
   const xf = req.headers.get("x-forwarded-for");
   return (xf?.split(",")[0] ?? req.headers.get("x-real-ip") ?? "unknown").trim();
 }

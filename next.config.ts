@@ -16,3 +16,8 @@ const nextConfig: NextConfig = {
 };
 
 export default nextConfig;
+
+// Lets `next dev` read Cloudflare bindings/vars from wrangler.jsonc + .dev.vars.
+if (process.env.NODE_ENV === "development") {
+  void import("@opennextjs/cloudflare").then((m) => m.initOpenNextCloudflareForDev());
+}

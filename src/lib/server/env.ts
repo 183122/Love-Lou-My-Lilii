@@ -41,7 +41,10 @@ export const env = {
     return process.env.TOKEN_ENCRYPTION_KEY ?? "";
   },
   get appUrl() {
-    return (process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000").replace(/\/$/, "");
+    // Read via a computed key so the bundler does not inline the build-time value:
+    // on Cloudflare the runtime var/secret must win.
+    const key = "NEXT_PUBLIC_APP_URL";
+    return (process.env[key] ?? "http://localhost:3000").replace(/\/$/, "");
   },
   get turnstileSiteKey() {
     return process.env.TURNSTILE_SITE_KEY ?? "";

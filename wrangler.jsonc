@@ -1,0 +1,19 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "vtr-evidence-hub",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2026-10-15",
+  // nodejs_compat: node:crypto (scrypt, AES-GCM, HMAC) and process.env from vars/secrets
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+  "services": [{ "binding": "WORKER_SELF_REFERENCE", "service": "vtr-evidence-hub" }],
+  "observability": { "enabled": true },
+  // Non-secret configuration. Secrets are set with `npx wrangler secret put <NAME>` (see docs/DEPLOYMENT.md).
+  "vars": {
+    "NEXT_PUBLIC_APP_URL": "https://vtr-evidence-hub.<your-subdomain>.workers.dev",
+    "GOOGLE_DRIVE_SCOPE": "file"
+  }
+}

@@ -7,7 +7,7 @@
 
 ## เทคโนโลยี
 
-Next.js 16 (App Router, Route Handlers) · React 19 · TypeScript · Tailwind CSS 4 · คอมโพเนนต์แบบ shadcn/ui (Radix) · Lucide · Framer Motion · Recharts · Supabase PostgreSQL · Google Drive API v3 · Cloudflare Turnstile · Vercel
+Next.js 16 (App Router, Route Handlers) · React 19 · TypeScript · Tailwind CSS 4 · คอมโพเนนต์แบบ shadcn/ui (Radix) · Lucide · Framer Motion · Recharts · Supabase PostgreSQL · Google Drive API v3 · Cloudflare Turnstile · **Cloudflare Workers** (OpenNext)
 
 ## ฟีเจอร์
 
@@ -26,14 +26,14 @@ Next.js 16 (App Router, Route Handlers) · React 19 · TypeScript · Tailwind CS
 
 ```bash
 npm install
-cp .env.example .env.local   # กรอกค่า (ดูคู่มือด้านล่าง)
+cp .env.example .env.local   # กรอกค่า (ดูคู่มือด้านล่าง); สำหรับ wrangler ใช้ .dev.vars รูปแบบเดียวกัน
 npm run dev
 ```
 
 คู่มือ:
 1. [docs/SUPABASE_SETUP.md](docs/SUPABASE_SETUP.md) — สร้างฐานข้อมูล รัน Migration และ Seed
 2. [docs/GOOGLE_OAUTH_SETUP.md](docs/GOOGLE_OAUTH_SETUP.md) — Google Cloud, Drive API, OAuth, Redirect URI, เชื่อม Drive
-3. [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) — ตั้งค่า Environment Variables, Deploy บน Vercel, ทดสอบระบบจริง
+3. [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) — ตั้งค่า Secrets, Deploy บน Cloudflare Workers, ทดสอบระบบจริง
 4. [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — การออกแบบการอัปโหลด ความปลอดภัย และข้อจำกัดของแพลตฟอร์ม
 5. [docs/TESTING.md](docs/TESTING.md) — ชุดทดสอบและการแมปกับรายการทดสอบ 30 ข้อ
 
@@ -44,7 +44,9 @@ npm run dev
 | `npm run dev` / `build` / `start` | พัฒนา / build / รัน production |
 | `npm run typecheck` / `lint` | ตรวจ TypeScript / ESLint |
 | `npm test` | Unit + Integration (รวมรัน SQL migration จริงบน PGlite) |
-| `npm run test:e2e` | Playwright E2E (desktop + mobile) ต้อง `npm run build` ก่อน |
+| `npm run test:e2e` | Playwright E2E (desktop + mobile) บน `next start` ต้อง `npm run build` ก่อน |
+| `npm run cf:build` / `cf:preview` / `cf:deploy` | build สำหรับ Cloudflare / ทดลองใน wrangler / deploy |
+| `npm run test:e2e:cf` | E2E ชุดเดียวกันใน Cloudflare Workers runtime (workerd) ต้อง `npm run cf:build` ก่อน |
 | `npm run test:drive-live` | ทดสอบกับ Google Drive จริง (ต้องมี GOOGLE_* credentials) |
 | `npm run hash-password -- "รหัสผ่าน"` | สร้าง `ADMIN_PASSWORD_HASH` |
 | `npm run seed:generate` | สร้าง `supabase/seed.sql` ใหม่จาก `src/data/indicators.ts` |

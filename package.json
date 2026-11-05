@@ -14,9 +14,15 @@
     "test:e2e": "playwright test",
     "test:drive-live": "vitest run --config vitest.live.config.mts",
     "seed:generate": "node --experimental-strip-types scripts/generate-seed.ts",
-    "hash-password": "node scripts/hash-password.mjs"
+    "hash-password": "node scripts/hash-password.mjs",
+    "cf:build": "opennextjs-cloudflare build",
+    "cf:preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
+    "cf:deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
+    "cf:typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",
+    "test:e2e:cf": "playwright test --config playwright.cf.config.ts"
   },
   "dependencies": {
+    "@opennextjs/cloudflare": "^1.20.16",
     "@radix-ui/react-alert-dialog": "^1.2.1",
     "@radix-ui/react-dialog": "^1.3.1",
     "@radix-ui/react-label": "^2.1.17",
@@ -55,6 +61,7 @@
     "postcss": "^8.5.32",
     "tailwindcss": "^4.3.4",
     "typescript": "^6.0.3",
-    "vitest": "^5.1.0"
+    "vitest": "^5.1.0",
+    "wrangler": "^4.157.0"
   }
 }
