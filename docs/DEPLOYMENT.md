@@ -73,3 +73,12 @@ npm run cf:preview      # เปิดดูเองที่ http://localhost:
 
 ## หากไม่มีสิทธิ์บัญชี
 การสร้าง Supabase project, Google OAuth client, Turnstile widget และ Cloudflare Worker ต้องทำโดยเจ้าของบัญชีของโรงเรียน ระบบนี้ยังไม่มี URL production จนกว่าจะ deploy ตามขั้นตอนข้างต้น
+
+## แก้ปัญหาการ Deploy บน Cloudflare
+| อาการ | สาเหตุ / วิธีแก้ |
+|---|---|
+| เปิดเว็บแล้วเห็น `Hello world` | ยังเป็นโค้ดตัวอย่างที่ Cloudflare สร้างตอนสร้าง Worker — โค้ดระบบยังไม่ถูก deploy ดูแท็บ Deployments |
+| Build log แสดง `> next build` และมีแค่ route `/` | Worker ผูกกับ repo ตัวอย่าง (เช่น `next-starter-template`) — Settings → Build → Git repository → Disconnect แล้ว Connect `Love-Lou-My-Lilii` |
+| `ERROR Could not find compiled Open Next config` | Build command ไม่ได้รัน OpenNext — ใช้ `npm run build` ของ repo นี้ (ซึ่งรัน `opennextjs-cloudflare build`) |
+| ไม่มีปุ่มสั่ง build ใหม่ | push commit ใหม่เข้า Production branch ที่ตั้งไว้ จะ build อัตโนมัติ หรือ deploy จากเครื่องด้วย `npm run cf:deploy` |
+| หน้าเว็บขึ้น “ระบบยังไม่ได้เชื่อมต่อฐานข้อมูล” | ขาด secret `SUPABASE_URL` / `SUPABASE_SERVICE_ROLE_KEY` หรือยังไม่ได้รัน `supabase/install.sql` |
