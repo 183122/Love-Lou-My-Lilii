@@ -34,9 +34,9 @@
    npm run cf:deploy        # = opennextjs-cloudflare build && opennextjs-cloudflare deploy
    ```
    หรือเชื่อม GitHub อัตโนมัติ: Dashboard → Workers & Pages → Create → **Import a repository** → เลือก repo นี้
-   - Build command: `npx opennextjs-cloudflare build`
-   - Deploy command: `npx opennextjs-cloudflare deploy`
-   - ตั้ง Build variable `NEXT_PUBLIC_APP_URL` ให้ตรงกับ URL จริงด้วย
+   - Build command: `npm run build` (ค่าเริ่มต้น — สคริปต์นี้รัน `opennextjs-cloudflare build` ซึ่งสร้างโฟลเดอร์ `.open-next/`)
+   - Deploy command: `npx wrangler deploy` (ค่าเริ่มต้น) หรือ `npx opennextjs-cloudflare deploy`
+   - หากเห็น `ERROR Could not find compiled Open Next config, did you run the build command?` แปลว่า build command ไม่ได้รัน OpenNext — ตรวจ Settings → Build → Build command
 8. นำ URL จริงไปใส่ใน **Authorized redirect URI** ของ Google: `https://<URL>/api/admin/drive/callback`
 9. **เชื่อม Google Drive** ที่ `/settings` → Google Drive → เชื่อมต่อ → สร้างโครงสร้างโฟลเดอร์
 10. ตั้ง **รหัสเข้าถึงผู้ชม** (ตั้งค่า › ความปลอดภัย)

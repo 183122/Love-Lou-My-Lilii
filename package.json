@@ -5,7 +5,7 @@
   "description": "ระบบรวบรวมภาพและวิดีโอประกอบการนิเทศเปิดภาคเรียน — TeacherTemplate VTR Evidence Hub",
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "opennextjs-cloudflare build",
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
@@ -19,7 +19,9 @@
     "cf:preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
     "cf:deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
     "cf:typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",
-    "test:e2e:cf": "playwright test --config playwright.cf.config.ts"
+    "test:e2e:cf": "playwright test --config playwright.cf.config.ts",
+    "build:next": "next build",
+    "deploy": "opennextjs-cloudflare deploy"
   },
   "dependencies": {
     "@opennextjs/cloudflare": "^1.20.16",
