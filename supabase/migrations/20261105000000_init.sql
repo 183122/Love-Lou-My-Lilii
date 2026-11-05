@@ -235,3 +235,8 @@ alter table public.rate_limits     enable row level security;
 revoke all on all tables in schema public from anon, authenticated;
 revoke execute on function public.rate_limit_hit(text, integer, integer) from public, anon, authenticated;
 grant execute on function public.rate_limit_hit(text, integer, integer) to service_role;
+
+-- The server (service_role) needs explicit privileges: newer Supabase projects
+-- may not grant them automatically on tables created from SQL.
+grant usage on schema public to service_role;
+grant select, insert, update, delete on all tables in schema public to service_role;

@@ -98,6 +98,17 @@ describe("database migration + seed", () => {
     expect(Number(c.video_count)).toBe(0);
   });
 
+  it("supabase/install.sql (single paste file) installs cleanly on a fresh database", async () => {
+    const fresh = new PGlite({ extensions: { pgcrypto } });
+    await fresh.exec(`create role anon nologin; create role authenticated nologin; create role service_role nologin bypassrls;`);
+    await fresh.exec(readFileSync("supabase/install.sql", "utf8"));
+    const r = (await fresh.query<{ categories: number; indicators: number }>(
+      "select (select count(*) from categories)::int categories, (select count(*) from indicators)::int indicators",
+    )).rows[0];
+    expect(r).toEqual({ categories: 7, indicators: 36 });
+    await fresh.close();
+  });
+
   it("rate_limit_hit allows up to the limit within the window", async () => {
     const hit = async () => (await one<{ ok: boolean }>("select rate_limit_hit('login:test', 3, 60) ok"))!.ok;
     expect([await hit(), await hit(), await hit(), await hit()]).toEqual([true, true, true, false]);

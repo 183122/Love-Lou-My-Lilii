@@ -6,6 +6,9 @@
 3. รอจนสถานะเป็น Healthy
 
 ## 2. รัน SQL Migration
+**วิธีง่ายที่สุด:** เปิด **SQL Editor** → New query → วางเนื้อหาไฟล์ `supabase/install.sql` ทั้งไฟล์ → **Run** (รวม migration + seed ในไฟล์เดียว รันครั้งเดียวบนโปรเจกต์ใหม่ ผลลัพธ์บรรทัดสุดท้ายต้องเป็น `7 | 36`)
+
+หรือรันแยกไฟล์:
 1. เมนู **SQL Editor** → New query
 2. คัดลอกเนื้อหา `supabase/migrations/20261105000000_init.sql` ทั้งไฟล์ → **Run**
 3. เปิด query ใหม่ คัดลอก `supabase/seed.sql` → **Run** (รันซ้ำได้ ไม่สร้างข้อมูลซ้ำ)
