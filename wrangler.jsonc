@@ -13,7 +13,7 @@
   "observability": { "enabled": true },
   // Non-secret configuration. Secrets are set with `npx wrangler secret put <NAME>` (see docs/DEPLOYMENT.md).
   "vars": {
-    "NEXT_PUBLIC_APP_URL": "https://vtr-evidence-hub.<your-subdomain>.workers.dev",
+    "NEXT_PUBLIC_APP_URL": "https://vtr-evidence-hub.tpkk-system.workers.dev",
     "GOOGLE_DRIVE_SCOPE": "file"
   }
 }
