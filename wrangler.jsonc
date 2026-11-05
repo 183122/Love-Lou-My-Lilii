@@ -11,6 +11,9 @@
   },
   "services": [{ "binding": "WORKER_SELF_REFERENCE", "service": "vtr-evidence-hub" }],
   "observability": { "enabled": true },
+  // Keep variables added in the Cloudflare dashboard when deploying from Git
+  // (otherwise `wrangler deploy` deletes dashboard "Text" variables not listed below).
+  "keep_vars": true,
   // Non-secret configuration. Secrets are set with `npx wrangler secret put <NAME>` (see docs/DEPLOYMENT.md).
   "vars": {
     "NEXT_PUBLIC_APP_URL": "https://vtr-evidence-hub.tpkk-system.workers.dev",
